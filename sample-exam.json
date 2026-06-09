@@ -1,0 +1,35 @@
+{
+  "config": {
+    "examTitle": "آزمون نمونه",
+    "questionCount": 20,
+    "languageMode": "fa",
+    "negativeMarking": "no",
+    "hours": 0,
+    "minutes": 30,
+    "seconds": 0
+  },
+  "correctAnswers": {
+    "q1": "1",
+    "q2": "4",
+    "q3": "2"
+  },
+  "lastResult": {
+    "examTitle": "آزمون نمونه",
+    "submittedAt": "1405/03/19 12:00",
+    "questionCount": 20,
+    "correct": 18,
+    "wrong": 2,
+    "blank": 0,
+    "score": 17.5,
+    "percentage": 87.5,
+    "taz": 5125,
+    "answers": {
+      "q1": "1",
+      "q2": "4"
+    },
+    "correctAnswers": {
+      "q1": "1",
+      "q2": "4"
+    }
+  }
+}

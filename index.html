@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سامانه آزمون حرفه‌ای</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-text">
+          <h1>سامانه آزمون حرفه‌ای</h1>
+          <p id="headerSubtitle">پاسخ‌برگ بزرگ، پیش‌نمایش ثابت در صفحه، مدیریت آزمون داخل مودال، ذخیره‌ی نهایی محلی</p>
+        </div>
+      </div>
+
+      <div class="top-tools">
+        <div class="timer-box" aria-live="polite">
+          <div class="label">زمان باقی‌مانده</div>
+          <div class="time" id="timerDisplay">00:00:00</div>
+        </div>
+        <div class="pill idle" id="statusPill">آماده</div>
+        <button class="btn secondary" id="manageBtn">مدیریت آزمون</button>
+        <button class="btn primary" id="startBtn">شروع آزمون</button>
+        <button class="btn" id="finishBtn">ثبت نهایی</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="column left-column">
+        <div class="panel answer-panel">
+          <div class="panel-head">
+            <div>
+              <h2>پاسخ‌برگ</h2>
+              <div class="sub" id="sheetSub">۰ سؤال | ۰ پاسخ ثبت‌شده</div>
+            </div>
+            <div class="panel-tools">
+              <button class="mini-btn" id="clearBtn" type="button">پاک کردن پاسخ‌ها</button>
+            </div>
+          </div>
+
+          <div class="sheet-summary">
+            <div class="meta-wrap">
+              <div class="meta" id="sheetMeta">برای فعال شدن پاسخ‌برگ، آزمون را شروع کن.</div>
+              <div class="booklet-meta" id="bookletMeta">دفترچه‌ای فعال نیست.</div>
+            </div>
+            <div class="stats" id="answerStats">
+              <div class="stat">صحیح: <span id="correctStat">0</span></div>
+              <div class="stat">غلط: <span id="wrongStat">0</span></div>
+              <div class="stat">پاسخ‌داده‌شده: <span id="answeredStat">0</span></div>
+              <div class="stat">بدون کلید: <span id="ungradedStat">0</span></div>
+            </div>
+          </div>
+
+          <div class="booklet-bar" id="bookletBar"></div>
+
+          <div class="answer-sheet-wrap">
+            <table class="answer-table">
+              <colgroup>
+                <col class="q" />
+                <col class="booklet" />
+                <col class="page" />
+                <col class="opt" />
+                <col class="opt" />
+                <col class="opt" />
+                <col class="opt" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>سؤال</th>
+                  <th>دفترچه</th>
+                  <th>صفحه</th>
+                                   <th>1</th>
+                  <th>2</th>
+                  <th>3</th>
+                  <th>4</th>
+                </tr>
+              </thead>
+              <tbody id="answerSheetBody"></tbody>
+            </table>
+          </div>
+
+          <div class="jump-bar">
+            <span class="muted">پرش به سؤال</span>
+            <input type="number" id="jumpInput" min="1" placeholder="شماره" />
+            <button class="mini-btn" id="jumpBtn" type="button">برو</button>
+          </div>
+        </div>
+
+        <div class="panel history-panel">
+          <div class="panel-head">
+            <div>
+              <h2>تاریخچه ثبت‌شده</h2>
+              <div class="sub">بعد از ثبت نهایی، فقط رکوردها به‌صورت محلی ذخیره می‌شوند.</div>
+            </div>
+            <div class="panel-tools">
+              <button class="mini-btn" id="clearHistoryBtn" type="button">پاک کردن تاریخچه</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="historyList" class="history-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="column right-column">
+        <div class="panel preview-panel">
+          <div class="panel-head">
+            <div>
+              <h2>پیش‌نمایش سؤال</h2>
+              <div class="sub" id="previewMeta">فایل هنوز بارگذاری نشده است.</div>
+            </div>
+            <div class="panel-tools">
+              <button class="mini-btn" id="fitBtn" type="button">فیت</button>
+              <button class="mini-btn" id="fsBtn" type="button">تمام‌صفحه</button>
+            </div>
+          </div>
+          <div class="preview-shell" id="previewShell">
+            <div class="preview-placeholder" id="previewPlaceholder">
+              <div class="big">PDF</div>
+              <p>از داخل «مدیریت آزمون» فایل PDF یا تصویر را بارگذاری کن. بعد از انتخاب فایل، همین بخش جایگزین می‌شود و اسکرولِ پیش‌نمایش داخل همین کادر می‌ماند.</p>
+            </div>
+            <div id="pdfViewer" class="viewer pdf-viewer" aria-label="پیش‌نمایش PDF"></div>
+            <img id="imageViewer" class="viewer" alt="پیش‌نمایش تصویر" />
+          </div>
+          <div class="preview-footer">
+            <span id="previewFootLeft">بدون فایل فعال</span>
+            <span id="previewFootRight">پیش‌نمایش داخلی و اسکرول‌دار</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="managementModal" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>مدیریت آزمون</h3>
+        <button class="btn secondary" id="closeManageBtn" type="button">بستن</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="accordion">
+          <div class="acc-item open">
+            <button class="acc-head" type="button">
+              <span>تعریف آزمون</span>
+              <span class="chev">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="scroll">
+                <div class="grid cols-3">
+                  <div class="field">
+                    <label for="examTitle">عنوان آزمون</label>
+                    <input id="examTitle" type="text" placeholder="عنوان آزمون را وارد کن" />
+                  </div>
+                  <div class="field">
+                    <label for="questionCount">تعداد سؤال</label>
+                    <input id="questionCount" type="number" min="1" max="500" value="20" />
+                  </div>
+                  <div class="field">
+                    <label for="languageMode">زبان</label>
+                    <select id="languageMode">
+                      <option value="fa">فارسی</option>
+                      <option value="en">English</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid cols-2" style="margin-top:12px;">
+                  <div class="field">
+                    <label for="negativeMarking">نمره منفی</label>
+                    <select id="negativeMarking">
+                      <option value="no">خیر</option>
+                      <option value="yes">بله</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="previewInfo">وضعیت پیش‌نمایش</label>
+                    <input id="previewInfo" type="text" disabled placeholder="هنوز فایلی انتخاب نشده است." />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <button class="acc-head" type="button">
+              <span>دفترچه‌ها و زمان</span>
+              <span class="chev">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="scroll">
+                <div class="grid cols-2">
+                  <div class="field">
+                    <label for="bookletMode">حالت آزمون</label>
+                    <select id="bookletMode">
+                      <option value="single">یک دفترچه</option>
+                      <option value="double">دو دفترچه</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="questionCount">تعداد کل سؤال</label>
+                    <input id="questionCount" type="number" min="1" max="500" value="20" readonly />
+                  </div>
+                </div>
+                <div class="booklet-config" id="bookletConfig1">
+                  <div class="booklet-title">دفترچه اول</div>
+                  <div class="grid cols-2">
+                    <div class="field">
+                      <label for="booklet1Title">عنوان دفترچه اول</label>
+                      <input id="booklet1Title" type="text" placeholder="عنوان دفترچه اول" />
+                    </div>
+                    <div class="field">
+                      <label for="booklet1QuestionCount">تعداد سؤال دفترچه اول</label>
+                      <input id="booklet1QuestionCount" type="number" min="1" value="60" />
+                    </div>
+                    <div class="field">
+                      <label for="booklet1Coefficient">ضریب دفترچه اول</label>
+                      <input id="booklet1Coefficient" type="number" min="1" step="0.1" value="1" />
+                    </div>
+                  </div>
+                  <div class="grid cols-2" style="margin-top:12px;">
+                    <div class="field"><label for="booklet1PageStart">صفحه شروع دفترچه اول</label><input id="booklet1PageStart" type="number" min="1" value="1" /></div>
+                    <div class="field"><label for="booklet1PageEnd">صفحه پایان دفترچه اول</label><input id="booklet1PageEnd" type="number" min="1" value="5" /></div>
+                  </div>
+                  <div class="grid cols-3" style="margin-top:12px;">
+                    <div class="field"><label for="booklet1Hours">ساعت</label><input id="booklet1Hours" type="number" min="0" value="1" /></div>
+                    <div class="field"><label for="booklet1Minutes">دقیقه</label><input id="booklet1Minutes" type="number" min="0" value="15" /></div>
+                    <div class="field"><label for="booklet1Seconds">ثانیه</label><input id="booklet1Seconds" type="number" min="0" value="0" /></div>
+                  </div>
+                </div>
+                <div class="booklet-config" id="bookletConfig2" style="margin-top:14px;">
+                  <div class="booklet-title">دفترچه دوم</div>
+                  <div class="grid cols-2">
+                    <div class="field">
+                      <label for="booklet2Title">عنوان دفترچه دوم</label>
+                      <input id="booklet2Title" type="text" placeholder="عنوان دفترچه دوم" />
+                    </div>
+                    <div class="field">
+                      <label for="booklet2QuestionCount">تعداد سؤال دفترچه دوم</label>
+                      <input id="booklet2QuestionCount" type="number" min="1" value="60" />
+                    </div>
+                    <div class="field">
+                      <label for="booklet2Coefficient">ضریب دفترچه دوم</label>
+                      <input id="booklet2Coefficient" type="number" min="1" step="0.1" value="1" />
+                    </div>
+                  </div>
+                  <div class="grid cols-2" style="margin-top:12px;">
+                    <div class="field"><label for="booklet2PageStart">صفحه شروع دفترچه دوم</label><input id="booklet2PageStart" type="number" min="1" value="6" /></div>
+                    <div class="field"><label for="booklet2PageEnd">صفحه پایان دفترچه دوم</label><input id="booklet2PageEnd" type="number" min="1" value="10" /></div>
+                  </div>
+                  <div class="grid cols-3" style="margin-top:12px;">
+                    <div class="field"><label for="booklet2Hours">ساعت</label><input id="booklet2Hours" type="number" min="0" value="0" /></div>
+                    <div class="field"><label for="booklet2Minutes">دقیقه</label><input id="booklet2Minutes" type="number" min="0" value="25" /></div>
+                    <div class="field"><label for="booklet2Seconds">ثانیه</label><input id="booklet2Seconds" type="number" min="0" value="0" /></div>
+                  </div>
+                </div>
+                <div class="note" style="margin-top:12px;">
+                  در حالت دو دفترچه، دفترچه دوم بعد از تمام شدن یا با دکمه‌ی «دفترچه بعدی» فعال می‌شود و برگشت به دفترچه اول غیرفعال می‌ماند.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <button class="acc-head" type="button">
+              <span>کلید پاسخ</span>
+              <span class="chev">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="scroll">
+                <div class="grid cols-2">
+                  <div>
+                    <div class="key-table-wrap">
+                      <table class="key-table">
+                        <colgroup>
+                          <col class="q" />
+                          <col class="booklet" />
+                          <col />
+                          <col />
+                          <col />
+                          <col />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>سؤال</th>
+                            <th>دفترچه</th>
+                                                        <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                          </tr>
+                        </thead>
+                        <tbody id="keyTableBody"></tbody>
+                      </table>
+                    </div>
+                    <div class="muted" style="margin-top:8px;">در هر ردیف فقط یک گزینه را انتخاب کن. این بخش داخل مدیریت می‌ماند و در نمای اصلی دیده نمی‌شود.</div>
+                  </div>
+                  <div class="grid" style="align-content:start;">
+                    <div class="field">
+                      <label for="keyExcelInput">بارگذاری کلید از Excel / CSV</label>
+                      <input id="keyExcelInput" type="file" accept=".xlsx,.xls,.csv" />
+                    </div>
+                    <div class="action-group">
+                      <button class="btn secondary" id="downloadTemplateBtn" type="button">دانلود قالب Excel</button>
+                      <button class="btn secondary" id="applyManualKeyBtn" type="button">ثبت کلید دستی</button>
+                    </div>
+                    <div class="note">
+                      قالب پیشنهادی Excel داخل بسته قرار گرفته است. هر سطر باید شامل شماره سؤال و پاسخ صحیح ۱ تا ۴ باشد.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <button class="acc-head" type="button">
+              <span>بارگذاری PDF / تصویر</span>
+              <span class="chev">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="scroll">
+                <div class="grid cols-2">
+                  <div class="field">
+                    <label for="previewFileInput">انتخاب فایل</label>
+                    <input id="previewFileInput" type="file" accept=".pdf,image/*" />
+                  </div>
+                  <div class="field">
+                    <label>فایل انتخاب‌شده</label>
+                    <div class="file-pill" id="selectedFileInfo">هنوز هیچ فایلی انتخاب نشده است.</div>
+                  </div>
+                </div>
+                <div class="note" style="margin-top:12px;">
+                  بعد از انتخاب فایل، پیش‌نمایش در ستون راست نمایش داده می‌شود و پیام خالی حذف می‌شود.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <button class="acc-head" type="button">
+              <span>ذخیره و خروجی</span>
+              <span class="chev">▾</span>
+            </button>
+            <div class="acc-body">
+              <div class="scroll">
+                <div class="grid cols-2">
+                  <div class="note">
+                    ذخیره‌ی مدیریت، فقط تنظیمات و کلید را در مرورگر نگه می‌دارد. پاسخ‌های درحال اجرا بعد از رفرش برنمی‌گردند.
+                  </div>
+                  <div class="action-group">
+                    <button class="btn primary" id="saveSettingsBtn" type="button">ذخیره مدیریت</button>
+                    <button class="btn secondary" id="resetConfigBtn" type="button">بازنشانی تنظیمات</button>
+                  </div>
+                </div>
+                <div class="field" style="margin-top:12px;">
+                  <label for="manualJsonOut">خروجی JSON آخرین ثبت</label>
+                  <textarea id="manualJsonOut" readonly placeholder="بعد از ثبت نهایی، خلاصه‌ی آزمون اینجا نمایش داده می‌شود."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <div class="muted" id="manageHint">برای اعمال تغییرات، ابتدا کلید و فایل را تنظیم کن و بعد «ذخیره مدیریت» را بزن.</div>
+        <div class="action-group">
+          <button class="btn secondary" id="exportHistoryBtn" type="button">دانلود تاریخچه JSON</button>
+          <button class="btn" id="closeManageBtn2" type="button">بستن</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="resultModal" aria-hidden="true">
+    <div class="modal result-modal">
+      <div class="modal-head">
+        <h3>کارنامه آزمون</h3>
+        <button class="btn secondary" id="closeResultBtn" type="button">بستن</button>
+      </div>
+      <div class="modal-body" id="resultContent"></div>
+      <div class="modal-actions">
+        <div class="muted">برای تحویل PDF، روی «دانلود PDF کارنامه» بزن.</div>
+        <div class="action-group">
+          <button class="btn primary" id="downloadPdfBtn" type="button">دانلود PDF کارنامه</button>
+          <button class="btn secondary" id="downloadJsonBtn" type="button">دانلود JSON نتیجه</button>
+          <button class="btn secondary" id="gradePendingBtn" type="button">تصحیح با کلید</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="guardModal" aria-hidden="true">
+    <div class="modal guard-modal">
+      <div class="modal-head">
+        <h3 id="guardTitle">تأیید عملیات</h3>
+        <button class="btn secondary" id="guardCancelBtn" type="button">بستن</button>
+      </div>
+      <div class="modal-body">
+        <div class="guard-box">
+          <div class="guard-message" id="guardMessage">برای ادامه، نوار را تا انتها بکش.</div>
+          <div class="guard-track" aria-hidden="true">
+            <div class="guard-fill" id="guardProgress"></div>
+          </div>
+          <div class="guard-control">
+            <input id="guardSlider" type="range" min="0" max="100" value="0" />
+            <div class="guard-percent" id="guardPercent">0%</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <div class="muted">وقتی نوار به 100٪ برسد، دکمه فعال می‌شود.</div>
+        <div class="action-group">
+          <button class="btn primary" id="guardConfirmBtn" type="button" disabled>تأیید</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
